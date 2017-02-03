@@ -1,6 +1,8 @@
 var animate = window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.mozRequestAnimationFrame ||
+  window.oRequestAnimationFrame ||
+  window.msRequestAnimationFrame ||
   function(callback) { window.setTimeout(callback, 1000/60) };
 
 var canvas = document.createElement('canvas');
@@ -22,6 +24,8 @@ var step = function() {
 };
 
 var update = function() {
+    player.update();
+    ball.update(player.paddle, computer.paddle);
 };
 
 var render = function() {
@@ -35,7 +39,7 @@ function Paddle(x, y, width, height) {
   this.width = width;
   this.height = height;
   this.x_speed = 0;
-  this.y_speed = 0;
+  this.y_speed = 5;
 }
 
 Paddle.prototype.render = function() {
@@ -84,6 +88,55 @@ var render = function() {
   player.render();
   computer.render();
   ball.render();
+};
+
+//Adding movement to paddles
+var keysDown = {};
+
+window.addEventListener("keydown", function(event) {
+  keysDown[event.keyCode] = true;
+});
+
+window.addEventListener("keyup", function(event) {
+  delete keysDown[event.keyCode];
+});
+
+var update = function() {
+  player.update();
+  ball.update(player.paddle, computer.paddle);
+};
+
+Player.prototype.update = function() {
+  for(var key in keysDown) {
+    var value = Number(key);
+    if(value == 38) { // up arrow
+      this.paddle.move(0, -4);
+    } else if (value == 40) { // down arrow
+      this.paddle.move(0, 4);
+    } else {
+      this.paddle.move(0, 0);
+    }
+  }
+};
+
+Paddle.prototype.move = function(x, y) {
+  this.x += x;
+  this.y += y;
+  this.x_speed = x;
+  this.y_speed = y;
+  if(this.y < 0) { // all the way to the top
+    this.y = 0;
+    this.y_speed = 0;
+  } else if (this.y + this.height > 500) { // all the way to the bottom
+    this.y = 500 - this.height;
+    this.y_speed = 0;
+  }
+}
+
+//update ball
+Ball.prototype.update = function() {
+  this.x += this.x_speed;
+  this.y += this.y_speed;
 };
 
 
