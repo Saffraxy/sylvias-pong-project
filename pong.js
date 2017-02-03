@@ -134,9 +134,44 @@ Paddle.prototype.move = function(x, y) {
 }
 
 //update ball
-Ball.prototype.update = function() {
+Ball.prototype.update = function(paddle1, paddle2) {
   this.x += this.x_speed;
   this.y += this.y_speed;
+  var left_x = this.x - 5;
+  var left_y = this.y - 5;
+  var right_x = this.x + 5;
+  var right_y = this.y + 5;
+
+  if(this.y - 5 < 0) { // hitting the top wall
+    this.y = 5;
+    this.y_speed = -this.y_speed;
+  } else if(this.y + 5 > 500) { // hitting the bottom wall
+    this.y = 495;
+    this.y_speed = -this.y_speed;
+  }
+
+  if(this.x < 0 || this.x > 800) { // a point was scored
+    this.x_speed = 3;
+    this.y_speed = 0;
+    this.x = 300;
+    this.y = 200;
+  }
+// collision detection
+  if(left_x > 200) {
+    if(left_x < (paddle1.x + paddle1.width) && right_x > paddle1.x && left_y < (paddle1.y + paddle1.height) && right_y > paddle1.y) {
+      // hit the player's paddle
+      this.x_speed = -3;
+      this.y_speed += (paddle1.x_speed / 2);
+      this.x += this.x_speed;
+    }
+  } else {
+    if(left_x < (paddle2.x + paddle2.width) && right_x > paddle2.x && left_y < (paddle2.y + paddle2.height) && right_y > paddle2.y) {
+      // hit the computer's paddle
+      this.x_speed = 3;
+      this.y_speed += (paddle2.y_speed / 2);
+      this.x += this.x_speed;
+    }
+  }
 };
 
 
