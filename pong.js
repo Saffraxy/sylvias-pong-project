@@ -25,6 +25,7 @@ var step = function() {
 
 var update = function() {
     player.update();
+    computer.update();
     ball.update(player.paddle, computer.paddle);
 };
 
@@ -103,7 +104,24 @@ window.addEventListener("keyup", function(event) {
 
 var update = function() {
   player.update();
+  computer.update(ball);
   ball.update(player.paddle, computer.paddle);
+};
+
+Computer.prototype.update = function(ball) {
+    var y_pos = ball.y;
+    var diff = -((this.paddle.y + (this.paddle.height / 2)) - y_pos);
+    if (diff < 0 && diff < -4) { //max speed up
+        diff = -5;
+    } else if (diff > 0 && diff > 4) { //max speed down
+        diff =5;
+    }
+    this.paddle.move(diff, 0);
+    if(this.paddle.y < 0) {
+        this.paddle.y = 0;
+    } else if (this.paddle.y + this.paddle.height > 500) {
+        this.paddle.y = 500 - this.paddle.height;
+    }
 };
 
 Player.prototype.update = function() {
