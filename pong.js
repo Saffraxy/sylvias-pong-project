@@ -25,7 +25,7 @@ var step = function() {
 
 var update = function() {
     player.update();
-    computer.update();
+    computer.update(ball);
     ball.update(player.paddle, computer.paddle);
 };
 
@@ -102,12 +102,6 @@ window.addEventListener("keyup", function(event) {
   delete keysDown[event.keyCode];
 });
 
-var update = function() {
-  player.update();
-  computer.update(ball);
-  ball.update(player.paddle, computer.paddle);
-};
-
 Computer.prototype.update = function(ball) {
     var y_pos = ball.y;
     var diff = -((this.paddle.y + (this.paddle.height / 2)) - y_pos);
@@ -116,7 +110,7 @@ Computer.prototype.update = function(ball) {
     } else if (diff > 0 && diff > 4) { //max speed down
         diff =5;
     }
-    this.paddle.move(diff, 0);
+    this.paddle.move(0, diff);
     if(this.paddle.y < 0) {
         this.paddle.y = 0;
     } else if (this.paddle.y + this.paddle.height > 500) {
@@ -179,7 +173,7 @@ Ball.prototype.update = function(paddle1, paddle2) {
     if(left_x < (paddle1.x + paddle1.width) && right_x > paddle1.x && left_y < (paddle1.y + paddle1.height) && right_y > paddle1.y) {
       // hit the player's paddle
       this.x_speed = -3;
-      this.y_speed += (paddle1.x_speed / 2);
+      this.y_speed += (paddle1.y_speed / 2);
       this.x += this.x_speed;
     }
   } else {
