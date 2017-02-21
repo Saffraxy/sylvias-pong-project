@@ -82,6 +82,9 @@ Ball.prototype.render = function() {
 var player = new Player();
 var computer = new Computer();
 var ball = new Ball(400, 250);
+var cPoints = 0 ; //Computer points
+var pPoints = 0 ; //Player points
+
 
 var render = function() {
   context.fillStyle = "purple";
@@ -161,13 +164,23 @@ Ball.prototype.update = function(paddle1, paddle2) {
     this.y = 495;
     this.y_speed = -this.y_speed;
   }
-
+    
+    if(this.x < 0) {
+        pPoints++; //computer score
+        updateScore();
+    } else if(this.x > 800 ) {
+        cPoints++; //player score
+        updateScore();
+    };
+    
   if(this.x < 0 || this.x > 800) { // a point was scored
     this.x_speed = 3;
     this.y_speed = 0;
     this.x = 300;
     this.y = 200;
   }
+
+    
 // collision detection
   if(left_x > 200) {
     if(left_x < (paddle1.x + paddle1.width) && right_x > paddle1.x && left_y < (paddle1.y + paddle1.height) && right_y > paddle1.y) {
@@ -185,5 +198,12 @@ Ball.prototype.update = function(paddle1, paddle2) {
     }
   }
 };
+
+var updateScore = function(){
+    var scoreBoard = document.getElementById('score');
+    //scoreBoard.innerHTML = '';
+    scoreBoard.innerHTML = "<p>Computer Score: " + cPoints + " / Player Score: " + pPoints + "</p>";
+};
+
 
 
