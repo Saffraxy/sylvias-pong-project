@@ -164,14 +164,24 @@ Ball.prototype.update = function(paddle1, paddle2) {
     this.y = 495;
     this.y_speed = -this.y_speed;
   }
-    
+    //updating score and setting a game over and end game
     if(this.x < 0) {
-        pPoints++; //computer score
-        updateScore();
+        pPoints++; //player score
+        if (pPoints < 11) {
+            updateScore();
+        } else if (pPoints=11) { 
+            gameOver(); 
+            pPoints=0; cPoints=0;
+        } 
     } else if(this.x > 800 ) {
-        cPoints++; //player score
-        updateScore();
-    };
+        cPoints++; //computer score
+       if (cPoints < 11) {
+            updateScore();
+        } else if (cPoints=11) { 
+            gameOver();
+            pPoints=0; cPoints=0;
+        }
+    }; 
     
   if(this.x < 0 || this.x > 800) { // a point was scored
     this.x_speed = 3;
@@ -201,8 +211,16 @@ Ball.prototype.update = function(paddle1, paddle2) {
 
 var updateScore = function(){
     var scoreBoard = document.getElementById('score');
-    //scoreBoard.innerHTML = '';
     scoreBoard.innerHTML = "<p>Computer Score: " + cPoints + " / Player Score: " + pPoints + "</p>";
+};
+
+var gameOver = function(){
+    var endGame = document.getElementById('end');
+    if (pPoints > cPoints) {
+        endGame.innerHTML = "GAME OVER!! You WON!!";
+    } else if (pPoints < cPoints) {
+        endGame.innerHTML = "GAME OVER!! You LOST!!";
+    }
 };
 
 
